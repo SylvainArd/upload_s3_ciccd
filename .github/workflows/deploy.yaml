@@ -1,0 +1,42 @@
+name: Deploy to AWS
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Set up PHP
+      uses: shivammathur/setup-php@v2
+      with:
+        php-version: '7.4'  # ou une version compatible de votre choix
+        extensions: mbstring
+
+    - name: Validate PHP syntax
+      run: |
+        find . -type f -name "*.php" -exec php -l {} \;
+
+    - name: Install Composer dependencies
+      run: composer install
+
+    - name: Set up SSH
+      uses: webfactory/ssh-agent@v0.5.3
+      with:
+        ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+    - name: Change permissions on EC2
+      run: |
+        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} 'sudo chown -R ec2-user:ec2-user /var/www/html/ && sudo chmod -R 755 /var/www/html/'
+
+    - name: Sync files to EC2
+      run: |
+        rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" --exclude '.git/' --exclude '.github/' . ec2-user@${{ secrets.EC2_PUBLIC_IP }}:/var/www/html/
+      env:
+        EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
