@@ -70,13 +70,17 @@ $s3Client = new S3Client([
         'secret' => '[mettez ici votre clé secrète aws]',
     ],
 ]);
+// Définir la taille maximale des fichiers (5 Mo)
+$maxFileSize = 5 * 1024 * 1024; // 5 Mo
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file'])) {
     $file = $_FILES['file'];
     $filePath = $file['tmp_name'];
     $fileName = $file['name'];
-
-    if (is_uploaded_file($filePath) && !empty($fileName)) {
+	$allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+    
+    if ($fileSize <= $maxFileSize && in_array($fileExtension, $allowedExtensions) && is_uploaded_file($filePath)) {
         try {
             $result = $s3Client->putObject([
                 'Bucket' => $bucketName,
