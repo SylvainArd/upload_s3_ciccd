@@ -40,15 +40,6 @@ jobs:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-    - name: Verify AWS credentials
-      run: |
-        if [ -z "$AWS_ACCESS_KEY_ID" ] || [ -z "$AWS_SECRET_ACCESS_KEY" ]; then
-          echo "AWS credentials are missing!"
-          exit 1
-        else
-          echo "AWS credentials are set correctly."
-        fi
-
     - name: Change permissions on EC2
       run: |
         ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} 'sudo chown -R ec2-user:ec2-user /var/www/html/ && sudo chmod -R 755 /var/www/html/'
@@ -57,6 +48,11 @@ jobs:
       run: |
         rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" --exclude '.git/' --exclude '.github/' . ec2-user@${{ secrets.EC2_PUBLIC_IP }}:/var/www/html/
 
-    - name: Restart Apache on EC2
+    - name: Set AWS environment variables on EC2
       run: |
-        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} 'sudo systemctl restart httpd'
+        ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} << EOF
+          echo "export AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> ~/.bashrc
+          echo "export AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> ~/.bashrc
+          source ~/.bashrc
+          sudo systemctl restart httpd
+        EOF
