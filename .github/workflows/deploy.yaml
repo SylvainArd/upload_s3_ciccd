@@ -32,9 +32,10 @@ jobs:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
     - name: Set up environment variables
-      run: echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
-      run: echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
-      run: echo "EC2_PUBLIC_IP=${{ secrets.EC2_PUBLIC_IP }}" >> $GITHUB_ENV
+      run: |
+        echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+        echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+        echo "EC2_PUBLIC_IP=${{ secrets.EC2_PUBLIC_IP }}" >> $GITHUB_ENV
 
     - name: Change permissions on EC2
       run: |
