@@ -57,11 +57,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit();
 }
 
-$bucketName = 'sylvain-ard-b9b78cc0'; // Remplacez par le nom de votre bucket S3
+$bucketName = 'sylvain-ard-3c3b2bd7'; // Remplacez par le nom de votre bucket S3
 $region = 'us-east-1'; // Remplacez par votre région AWS
 require 'vendor/autoload.php';
 
-$cloudFrontDomain = 'd1vpbzi6pyqyjc.cloudfront.net'; // Remplacez par votre domaine CloudFront
+$cloudFrontDomain = 'd1vra4yqb7goi.cloudfront.net'; // Remplacez par votre domaine CloudFront
 
 use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
