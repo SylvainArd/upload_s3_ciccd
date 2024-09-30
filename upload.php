@@ -62,24 +62,13 @@ $cloudFrontDomain = 'd1jvdpdxwxifi5.cloudfront.net'; // Remplacez par votre doma
 use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
 
-// Vérification silencieuse des credentials AWS
-$awsAccessKeyId = getenv('AWS_ACCESS_KEY_ID');
-$awsSecretAccessKey = getenv('AWS_SECRET_ACCESS_KEY');
 
-if (!$awsAccessKeyId || !$awsSecretAccessKey) {
-    error_log("AWS credentials are missing or not properly set.");
-    die("Erreur : Problème de configuration du service AWS.");
-}
 
 
 // Utiliser les credentials AWS à partir des variables d'environnement
 $s3Client = new S3Client([
     'region' => $region,
-    'version' => 'latest',
-    'credentials' => [
-        'key' => $awsAccessKeyId,
-        'secret' => $awsSecretAccessKey,
-    ]
+    'version' => 'latest'
 ]);
 
 // Définir la taille maximale des fichiers (5 Mo)
