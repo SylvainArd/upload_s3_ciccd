@@ -5,6 +5,12 @@ error_reporting(E_ALL);
 
 session_start();
 
+// Redirection vers HTTPS
+if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') {
+    header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
+    exit();
+}
+
 // Définir les identifiants de connexion
 $username = "admin";
 $password = "86369ard;2099M123";
@@ -51,25 +57,25 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit();
 }
 
-$bucketName = 'sylvain-ard-3f991328'; // Remplacez par le nom de votre bucket S3
+$bucketName = 'sylvain-ard-b9b78cc0'; // Remplacez par le nom de votre bucket S3
 $region = 'us-east-1'; // Remplacez par votre région AWS
 require 'vendor/autoload.php';
 
-$cloudFrontDomain = 'dxmwt6r36hyb4.cloudfront.net'; // Remplacez par votre domaine CloudFront
-
-require 'vendor/autoload.php';
+$cloudFrontDomain = 'd1vpbzi6pyqyjc.cloudfront.net'; // Remplacez par votre domaine CloudFront
 
 use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
 
+// Utiliser les credentials AWS à partir des variables d'environnement
 $s3Client = new S3Client([
     'region' => $region,
     'version' => 'latest',
     'credentials' => [
-        'key' => '[mettez ici votre clé aws]',
-        'secret' => '[mettez ici votre clé secrète aws]',
+        'key' => getenv('AWS_ACCESS_KEY_ID'),
+        'secret' => getenv('AWS_SECRET_ACCESS_KEY'),
     ],
 ]);
+
 // Définir la taille maximale des fichiers (5 Mo)
 $maxFileSize = 5 * 1024 * 1024; // 5 Mo
 
@@ -77,7 +83,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['file'])) {
     $file = $_FILES['file'];
     $filePath = $file['tmp_name'];
     $fileName = $file['name'];
-	$allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
+    $fileSize = $file['size'];
+    $allowedExtensions = ['jpg', 'jpeg', 'png', 'gif'];
     $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
     
     if ($fileSize <= $maxFileSize && in_array($fileExtension, $allowedExtensions) && is_uploaded_file($filePath)) {

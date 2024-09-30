@@ -16,7 +16,7 @@ jobs:
     - name: Set up PHP
       uses: shivammathur/setup-php@v2
       with:
-        php-version: '7.4'  # ou une version compatible de votre choix
+        php-version: '7.4'
         extensions: mbstring
 
     - name: Validate PHP syntax
@@ -38,5 +38,3 @@ jobs:
     - name: Sync files to EC2
       run: |
         rsync -avz --delete -e "ssh -o StrictHostKeyChecking=no" --exclude '.git/' --exclude '.github/' . ec2-user@${{ secrets.EC2_PUBLIC_IP }}:/var/www/html/
-      env:
-        EC2_PUBLIC_IP: ${{ secrets.EC2_PUBLIC_IP }}
