@@ -31,6 +31,11 @@ jobs:
       with:
         ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
+    - name: Set up environment variables
+      run: echo "AWS_ACCESS_KEY_ID=${{ secrets.AWS_ACCESS_KEY_ID }}" >> $GITHUB_ENV
+      run: echo "AWS_SECRET_ACCESS_KEY=${{ secrets.AWS_SECRET_ACCESS_KEY }}" >> $GITHUB_ENV
+      run: echo "EC2_PUBLIC_IP=${{ secrets.EC2_PUBLIC_IP }}" >> $GITHUB_ENV
+
     - name: Change permissions on EC2
       run: |
         ssh -o StrictHostKeyChecking=no ec2-user@${{ secrets.EC2_PUBLIC_IP }} 'sudo chown -R ec2-user:ec2-user /var/www/html/ && sudo chmod -R 755 /var/www/html/'

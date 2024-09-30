@@ -5,11 +5,7 @@ error_reporting(E_ALL);
 
 session_start();
 
-// Redirection vers HTTPS
-if (!isset($_SERVER['HTTPS']) || $_SERVER['HTTPS'] !== 'on') {
-    header('Location: https://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']);
-    exit();
-}
+
 
 // Définir les identifiants de connexion
 $username = "admin";
@@ -57,11 +53,11 @@ if (!isset($_SESSION['loggedin']) || $_SESSION['loggedin'] !== true) {
     exit();
 }
 
-$bucketName = 'sylvain-ard-3c3b2bd7'; // Remplacez par le nom de votre bucket S3
+$bucketName = 'sylvain-ard-5956be63'; // Remplacez par le nom de votre bucket S3
 $region = 'us-east-1'; // Remplacez par votre région AWS
 require 'vendor/autoload.php';
 
-$cloudFrontDomain = 'd1vra4yqb7goi.cloudfront.net'; // Remplacez par votre domaine CloudFront
+$cloudFrontDomain = 'd1jvdpdxwxifi5.cloudfront.net'; // Remplacez par votre domaine CloudFront
 
 use Aws\S3\S3Client;
 use Aws\Exception\AwsException;
